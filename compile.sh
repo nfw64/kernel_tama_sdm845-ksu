@@ -9,7 +9,6 @@ blue="\033[94m"
 yellow="\033[93m"
 
 if [ -d /workspace ] ; then
-git pull origin main
 git submodule update --init --recursive
 ./c-depend.sh
 fi
