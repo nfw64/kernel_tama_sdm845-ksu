@@ -1,6 +1,3 @@
-[submodule "AnyKernel3"]
-	path = AnyKernel3
-	url = https://github.com/nfw64/AnyKernel3.git
 [submodule "KernelSU"]
 	path = KernelSU
 	url = https://github.com/nfw64/KernelSU.git

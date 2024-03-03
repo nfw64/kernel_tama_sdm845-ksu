@@ -22,7 +22,6 @@ TOPICID=10
 BOT_MSG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
 BOT_DEL_URL="https://api.telegram.org/bot$TG_TOKEN/deleteMessage"
 BOT_BUILD_URL="https://api.telegram.org/bot$TG_TOKEN/sendDocument"
-time=(date)
 tg_post_msg(){
 	if [ $TG_SUPER = 1 ]
 	then
@@ -33,11 +32,11 @@ tg_post_msg(){
 	    -d "parse_mode=html" \
 	    -d text="Kernel Build has started
 Date : $(date +%r)
-Device : akatsuki
+Device : "$1"
 Type : global
-KSU : $(git submodule | grep -o "KernelSU (v.*)" )
+KSU : "$2"
 Version : $(make kernelversion)
-Clang : $(clang --version | head -1)"
+Clang : $(clang -v | head -1)"
 	else
 	    curl -s -X POST "$BOT_MSG_URL" \
 	    -d chat_id="$CHATID" \
@@ -75,7 +74,8 @@ tg_post_build()
 	    -F message_thread_id="$TOPICID" \
 	    -F "disable_web_page_preview=true" \
 	    -F "parse_mode=Markdown" \
-	    -F caption="Kernel has finished compiling"
+	    -F caption="Kernel has finished compiling
+Build took: "$2""
 	else
 	    curl -F document=@"$1" "$BOT_BUILD_URL" \
 	    -F chat_id="$CHATID"  \
@@ -85,35 +85,15 @@ tg_post_build()
 	fi
 }
 
-normal="\033[0m"
-orange="\033[1;38;5;208m"
-red="\033[1;31m"
-green="\033[1;32m"
-
 case "$1" in
   file)
     tg_post_build $2 $3 > /dev/null 2>&1
-    echo "file has been sent to telegram"
     ;;
   msg)
-    tg_post_msg $2 > /dev/null 2>&1
-    echo "action have been logged in telegram"
+    tg_post_msg $2 $3 > /dev/null 2>&1
     ;;
   error)
     tg_error $2 $3 > /dev/null 2>&1
-    echo "failed"
-    ;;
-  help)
-    echo "Cara Pemakaian:"
-    echo "- Untuk kirim file"
-    echo "${green}kirimtele.sh file namafile caption${normal}"
-    echo "- Untuk kirim pesan"
-    echo "${green}kirimtele.sh msg caption${normal}"
-    ;;
-  *)
-    echo "command tidak ditemukan"
-    echo "ketik ${green}kirimtele.sh help${normal}"
-    echo "untuk cara penggunaan"
     ;;
 esac
 #################################################
