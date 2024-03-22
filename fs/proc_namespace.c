@@ -10,14 +10,10 @@
 #include <linux/nsproxy.h>
 #include <linux/security.h>
 #include <linux/fs_struct.h>
-<<<<<<< HEAD
-=======
-#include <linux/sched/task.h>
 #ifdef CONFIG_SUS_FS
 #include <linux/suspicious.h>
 #endif
 
->>>>>>> ba001fc22954 (fs: suspicious-fs: prevent detection through common methods)
 #include "proc/internal.h" /* only for get_proc_task() in ->open() */
 
 #include "pnode.h"

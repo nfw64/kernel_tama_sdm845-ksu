@@ -1,58 +1,64 @@
 #!/bin/bash
-# copy right by zetaxbyte
-# you can rich me on telegram t.me/@zetaxbyte
 
-cyan="\033[96m"
-green="\033[92m"
-red="\033[91m"
-blue="\033[94m"
-yellow="\033[93m"
+export TZ='Asia/Kuala_Lumpur'
+BUILDDATE=$(date +%H%M)
 
-echo -e "$cyan===========================\033[0m"
-echo -e "$cyan= START COMPILING KERNEL  =\033[0m"
-echo -e "$cyan===========================\033[0m"
+# Start
+echo "Build started"
+# Check if gitpod and install dependencies
+if [ -d /workspace ] ; then
+sudo apt update -y && sudo apt upgrade -y && sudo apt install nano bc bison ca-certificates curl flex gcc git libc6-dev libssl-dev openssl python-is-python3 ssh wget zip zstd sudo make clang gcc-arm-linux-gnueabi software-properties-common build-essential libarchive-tools gcc-aarch64-linux-gnu -y && sudo apt install build-essential -y && sudo apt install libssl-dev libffi-dev libncurses5-dev zlib1g zlib1g-dev libreadline-dev libbz2-dev libsqlite3-dev make gcc -y && sudo apt install pigz -y && sudo apt install python2 -y && sudo apt install python3 -y && sudo apt install cpio -y && sudo apt install lld -y
+fi
 
-echo -e "$blue...LOADING...\033[0m"
+# Set variable
+KSU_GIT_VERSION=$(cd KernelSU && git rev-list --count HEAD)
+eval KSU_VERSION=$(expr 10000 + $KSU_GIT_VERSION + 200)
+export KBUILD_BUILD_USER=slicer
+export KBUILD_BUILD_HOST=nfw64
+DEFCONFIG="tama_akatsuki_defconfig"
+# Send info to telegram
+./telegram.sh msg "$DEFCONFIG" "$KSU_VERSION"
 
-echo -e -ne "$green## (10%\r"
-sleep 0.7
-echo -e -ne "$green#####                     (33%)\r"
-sleep 0.7
-echo -e -ne "$green#############             (66%)\r"
-sleep 0.7
-echo -e -ne "$green#######################   (100%)\r"
-echo -ne "\n"
+# Update ksu
+git submodule update --remote
+git submodule update --init --recursive
 
-echo -e -n "$yellow\033[104mPRESS ENTER TO CONTINUE\033[0m"
-read P
-echo  $P
-
-# change DEFCONFIG to you are defconfig name or device codename
-
-DEFCONFIG="tama_aurora_defconfig"
-
-# you can set you name or host name(optional)
-
-export KBUILD_BUILD_USER=To_infinity_and_beyond
-export KBUILD_BUILD_HOST=kanonify
-
-# change TC_DIR(directory) with your clang
-
-TC_DIR="/workspace"
-
-# do not modify export PATCH it's been including with TC_DIR
+# Export Clang
+TC_DIR="/"
 
 export PATH="$TC_DIR/bin:$PATH"
 
+# Timer
+m=$(date +%M)
+s=$(date +%S)
+# Timer-End
+
+# Build
 mkdir -p out
 make O=out ARCH=arm64 $DEFCONFIG
-
 make -j$(nproc --all) O=out ARCH=arm64 CC=clang LD=ld.lld AR=llvm-ar AS=llvm-as NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- 2>&1 | tee log.txt
 
-if [ -f out/arch/arm64/boot/Image.gz ] ; then
-    echo -e "$cyan===========================\033[0m"
-    echo -e "$cyan=  SUCCESS COMPILE KERNEL =\033[0m"
-    echo -e "$cyan===========================\033[0m"
+# Timer
+echo "Build took : $(expr $(date +%M) - $m) minute(s) and $(expr $(date +%S) - $s) second(s)"
+minute="$(expr $(date +%M) - $m)"
+second="$(expr $(date +%S) - $s)"
+# Timer-End
+
+if [ -f out/arch/arm64/boot/Image.gz-dtb ] ; then
+	# Package
+	git clone --depth=1 https://github.com/nfw64/AnyKernel3.git AnyKernel3
+	cp -R out/arch/arm64/boot/Image.gz-dtb AnyKernel3/Image.gz-dtb
+	cd AnyKernel3
+	zip -r9 starfield-ksu-"$BUILDDATE" . -x ".git*" -x "README.md" -x "*.zip"
+	mv starfield-ksu-"$BUILDDATE".zip ..
+	cd ..
+	./telegram.sh file starfield-ksu-"$BUILDDATE".zip "$minute" "$second"
+	# Finish
+	cp -R out/arch/arm64/boot boot-out/
+	rm -rf out/ AnyKernel3/ log.txt starfield-ksu-*
+	echo "Build finished"
 else
-echo -e "$red!ups...something wrong!?\033[0m"
+	# Fail
+	./telegram.sh error log.txt
+	echo "Build failed"
 fi
