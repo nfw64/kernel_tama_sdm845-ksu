@@ -32,11 +32,10 @@ tg_post_msg(){
 	    -d "parse_mode=html" \
 	    -d text="Kernel Build has started
 Date : $(date +%r)
-Device : "$1"
-Type : global
+Defconfig : "$1"
 KSU : "$2"
 Version : $(make kernelversion)
-Clang : $(clang -v | head -1)"
+Clang : $(clang --version | head -1)"
 	else
 	    curl -s -X POST "$BOT_MSG_URL" \
 	    -d chat_id="$CHATID" \
