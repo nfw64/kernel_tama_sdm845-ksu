@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export TZ='Asia/Kuala_Lumpur'
-BUILDDATE=$(date +%H%M)
+BUILDTIME=$(date +%H%M)
 
 # Start
 echo "Build started"
@@ -44,16 +44,15 @@ TIMER="$(expr $(date +%M) - $m) minute(s) and $(expr $(date +%S) - $s) second(s)
 # Timer-End
 
 if [ -f out/arch/arm64/boot/Image.gz-dtb ] ; then
+cp -R out/arch/arm64/boot/Image.gz-dtb AnyKernel3/Image.gz-dtb
 	# Package
 	git clone --depth=1 https://github.com/nfw64/AnyKernel3.git AnyKernel3
-	cp -R out/arch/arm64/boot/Image.gz-dtb AnyKernel3/Image.gz-dtb
 	cd AnyKernel3
 	zip -r9 starfield-ksu-"$BUILDDATE" . -x ".git*" -x "README.md" -x "*.zip"
 	mv starfield-ksu-"$BUILDDATE".zip ..
 	cd ..
 	./telegram.sh file starfield-ksu-"$BUILDDATE".zip "$TIMER"
 	# Finish
-	rm -rf boot-out/
 	cp -R out/arch/arm64/boot boot-out/
 	rm -rf out/ AnyKernel3/ log.txt starfield-ksu-*
 	echo "Build finished"
