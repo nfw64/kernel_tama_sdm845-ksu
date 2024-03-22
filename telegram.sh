@@ -32,11 +32,10 @@ tg_post_msg(){
 	    -d "parse_mode=html" \
 	    -d text="Kernel Build has started
 Date : $(date +%r)
-Device : "$1"
-Type : global
+Defconfig : "$1"
 KSU : "$2"
 Version : $(make kernelversion)
-Clang : $(clang -v | head -1)"
+Clang : $(clang --version | head -1)"
 	else
 	    curl -s -X POST "$BOT_MSG_URL" \
 	    -d chat_id="$CHATID" \
@@ -74,8 +73,7 @@ tg_post_build()
 	    -F message_thread_id="$TOPICID" \
 	    -F "disable_web_page_preview=true" \
 	    -F "parse_mode=Markdown" \
-	    -F caption="Kernel has finished compiling
-Build took: "$2""
+	    -F caption="Build took: "$2" minute(s) and "$3" second(s)"
 	else
 	    curl -F document=@"$1" "$BOT_BUILD_URL" \
 	    -F chat_id="$CHATID"  \
@@ -87,7 +85,7 @@ Build took: "$2""
 
 case "$1" in
   file)
-    tg_post_build $2 $3 > /dev/null 2>&1
+    tg_post_build $2 $3 $4 > /dev/null 2>&1
     ;;
   msg)
     tg_post_msg $2 $3 > /dev/null 2>&1

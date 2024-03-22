@@ -40,7 +40,8 @@ make -j$(nproc --all) O=out ARCH=arm64 CC=clang LD=ld.lld AR=llvm-ar AS=llvm-as 
 
 # Timer
 echo "Build took : $(expr $(date +%M) - $m) minute(s) and $(expr $(date +%S) - $s) second(s)"
-TIMER="$(expr $(date +%M) - $m) minute(s) and $(expr $(date +%S) - $s) second(s)"
+minute="$(expr $(date +%M) - $m)"
+second="$(expr $(date +%S) - $s)"
 # Timer-End
 
 if [ -f out/arch/arm64/boot/Image.gz-dtb ] ; then
@@ -51,7 +52,7 @@ if [ -f out/arch/arm64/boot/Image.gz-dtb ] ; then
 	zip -r9 starfield-ksu-"$BUILDDATE" . -x ".git*" -x "README.md" -x "*.zip"
 	mv starfield-ksu-"$BUILDDATE".zip ..
 	cd ..
-	./telegram.sh file starfield-ksu-"$BUILDDATE".zip "$TIMER"
+	./telegram.sh file starfield-ksu-"$BUILDDATE".zip "$minute" "$second"
 	# Finish
 	cp -R out/arch/arm64/boot boot-out/
 	rm -rf out/ AnyKernel3/ log.txt starfield-ksu-*
