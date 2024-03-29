@@ -35,8 +35,7 @@ static const char* const suspicious_mount_paths[] = {
 	"/apex/com.android.art/bin/dex2oat",
 	"/system/apex/com.android.art/bin/dex2oat",
 	"/system/etc/preloaded-classes",
-	"/dev/zygisk",
-	"/system/etc/hosts"
+	"/dev/zygisk"
 };
 
 static const char* const suspicious_mount_devices[] = {
