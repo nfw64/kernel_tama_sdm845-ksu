@@ -47,9 +47,9 @@ make O=out ARCH=arm64 $DEFCONFIG
 make -j$(nproc --all) O=out ARCH=arm64 CC=clang LD=ld.lld AR=llvm-ar AS=llvm-as NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- 2>&1 | tee log.txt
 
 # Timer
-echo "Build took : $(expr $(date +%M) - $m) minute(s) and $(expr $(date +%S) - $s) second(s)"
+echo "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 END=$(date +"%s")
-DIFF=$(( END - START))
+DIFF=$(( END - START ))
 # Timer-End
 
 if [ -f out/arch/arm64/boot/Image.gz-dtb ] ; then
