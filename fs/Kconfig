@@ -318,11 +318,4 @@ config DYNAMIC_FSYNC
 	help
 	  An experimental file sync control using new power_suspend driver 
 
-config SUS_FS
-	bool "suspicious-fs"
-	help
-	  This prevents the kernel from revealing KernelSU/Zygisk mount points in /proc 
-	  for non-system apps and also prevents scanning the filesystem for suspicious 
-	  files and directories.
-	  
 endmenu
