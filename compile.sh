@@ -6,18 +6,13 @@ BUILDDATE=$(date +%H%M)
 # Start
 echo "Build started"
 
-check_deps () {
-DEPS=$(echo {nano bc bison gcc clang make})
-for i in $DEPS ; do
-    dpkg-query -W -f='${Package}\n' | grep ^$i$ > /dev/null
-    if [ $? != 0 ] ; then
-        echo "Installing deps ..."
-        sudo apt update -y && sudo apt upgrade -y && sudo apt install nano bc bison ca-certificates curl flex gcc git libc6-dev libssl-dev openssl python-is-python3 ssh wget zip zstd sudo make clang gcc-arm-linux-gnueabi software-properties-common build-essential libarchive-tools gcc-aarch64-linux-gnu -y && sudo apt install build-essential -y && sudo apt install libssl-dev libffi-dev libncurses5-dev zlib1g zlib1g-dev libreadline-dev libbz2-dev libsqlite3-dev make gcc -y && sudo apt install pigz -y && sudo apt install python2 -y && sudo apt install python3 -y && sudo apt install cpio -y && sudo apt install lld -y
-    fi
-done  
+depends(){
+  sudo apt update -y && sudo apt upgrade -y && sudo apt install nano bc      bison ca-certificates curl flex gcc git libc6-dev libssl-dev openssl python-is     -python3 ssh wget zip zstd sudo make clang gcc-arm-linux-gnueabi software-prop     erties-common build-essential libarchive-tools gcc-aarch64-linux-gnu -y && sud     o apt install build-essential -y && sudo apt install libssl-dev libffi-dev lib     ncurses5-dev zlib1g zlib1g-dev libreadline-dev libbz2-dev libsqlite3-dev make      gcc -y && sudo apt install pigz -y && sudo apt install python2 -y && sudo apt      install python3 -y && sudo apt install cpio -y && sudo apt install lld -y
 }
 
-check_deps
+if [ -f /workspace ]; then 
+  depends
+fi 
 
 # Set variable
 KSU_GIT_VERSION=$(cd KernelSU && git rev-list --count HEAD)
@@ -60,7 +55,7 @@ if [ -f out/arch/arm64/boot/Image.gz-dtb ] ; then
 	zip -r9 starfield-ksu-"$BUILDDATE" . -x ".git*" -x "README.md" -x "*.zip"
 	mv starfield-ksu-"$BUILDDATE".zip ..
 	cd ..
-	./telegram.sh file starfield-ksu-"$BUILDDATE".zip "$((DIFF / 60))" "$((DIFF % 60))"
+	./telegram.sh file starfield-ksu-"$BUILDDATE".zip "$(expr $DIFF / 60)" "$((DIFF % 60))"
 	# Finish
 	cp -R out/arch/arm64/boot boot-out/
 	rm -rf out/ AnyKernel3/ log.txt starfield-ksu-*
