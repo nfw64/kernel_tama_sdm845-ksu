@@ -1,0 +1,59 @@
+name: KernelCI
+
+on:
+  push:
+    branches: [ "Starfield-OC" ]
+  workflow_dispatch:
+
+jobs:
+  build-kernel-ksu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking Out
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: '0'
+
+      - name: Init environment
+        run: |
+          git config --global user.name "nfw64"
+          git config --global user.email "chopopzml@gmail.com"
+          source compile.sh
+          echo "Building for $DEFCONFIG"
+          ./report.sh
+
+      - name: Build Kernel
+        env: 
+            INC_KSU: true
+        run: |
+          source compile.sh
+          init_clang
+          make_kernel
+          package_kernel
+
+  build-kernel-nonksu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking Out
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: '0'
+
+      - name: Init environment
+        run: |
+          git config --global user.name "nfw64"
+          git config --global user.email "chopopzml@gmail.com"
+          source compile.sh
+          echo "Building for $DEFCONFIG"
+          sudo apt update -y
+
+      - name: Build Kernel
+        env:
+          INC_KSU: false
+        run: |
+          source compile.sh
+          init_clang
+          make_kernel
+          package_kernel

@@ -43,6 +43,10 @@ Module.symvers
 #
 # Top-level generic files
 #
+clang/
+log.txt
+ndk/
+out/
 /tags
 /TAGS
 /linux
@@ -69,7 +73,7 @@ Module.symvers
 !.gitignore
 !.mailmap
 !.cocciconfig
-!.gitpod.yml
+!.github
 
 #
 # Generated include files
