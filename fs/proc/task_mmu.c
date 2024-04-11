@@ -23,10 +23,6 @@
 #include <asm/tlbflush.h>
 #include "internal.h"
 
-#if defined(CONFIG_KSU) && defined(CONFIG_KSU_SUSFS)
-#include <linux/susfs.h>
-#endif
-
 void task_mem(struct seq_file *m, struct mm_struct *mm)
 {
 	unsigned long text, lib, swap, ptes, pmds, anon, file, shmem;
@@ -374,11 +370,6 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma, int is_pid)
 	/* We don't show the stack guard page in /proc/maps */
 	start = vma->vm_start;
 	end = vma->vm_end;
-#if defined(CONFIG_KSU) && defined(CONFIG_KSU_SUSFS)
-	if (ino > 0) {
-		if (susfs_suspicious_kstat_or_hide_in_maps(ino, &ino, &dev)) return;
-	}
-#endif
 	show_vma_header_prefix(m, start, end, flags, pgoff, dev, ino);
 
 	/*
