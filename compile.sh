@@ -141,7 +141,7 @@ init_clang() {
     if [ REPO = true ]; then 
       git clone $CLANG_LINK --depth=1 -b $CLANG_BRANCH --single-branch clang
     else 
-      (mkdir clang ; cd clang ; wget --progress=dot:force:noscroll $CLANG_LINK ; tar -xf *)
+      (mkdir clang ; cd clang ; wget -q $CLANG_LINK ; tar -xf *)
     fi
   fi
   if ! command -v bc &>/dev/null; then
