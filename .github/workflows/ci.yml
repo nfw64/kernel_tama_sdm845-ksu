@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-kernel-ksu:
+  build-kernel-noksu:
     runs-on: ubuntu-latest
     steps:
       - name: Checking Out
@@ -32,7 +32,7 @@ jobs:
           make_kernel
           package_kernel
 
-  build-kernel-nonksu:
+  build-kernel-ksu:
     runs-on: ubuntu-latest
     steps:
       - name: Checking Out
