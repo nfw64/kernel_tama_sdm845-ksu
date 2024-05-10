@@ -102,4 +102,8 @@ extern dev_t name_to_dev_t(const char *name);
 
 extern unsigned int sysctl_mount_max;
 
+#if defined(CONFIG_KSU) && defined(CONFIG_KSU_SUSFS)
+extern int path_umount(struct path *path, int flags);
+#endif
+
 #endif /* _LINUX_MOUNT_H */
