@@ -12,7 +12,7 @@ jobs:
       - name: Checking Out
         uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: false
           fetch-depth: '0'
 
       - name: Init environment
@@ -38,7 +38,7 @@ jobs:
       - name: Checking Out
         uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: false
           fetch-depth: '0'
 
       - name: Init environment
