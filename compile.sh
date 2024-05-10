@@ -106,10 +106,10 @@ gen_zip() {
 post_file() {
   MESSAGE="$(( $DIFF / 60 )) minute(s) and $((DIFF % 60)) second(s)"
   if [ ! $INC_KSU = true ]; then
-    tg_post_build starfield*.zip "*KernelSU variant*
+    tg_post_build starfield*.zip "*Non-KernelSU variant*
 Build took $MESSAGE" > /dev/null
   else
-    tg_post_build starfield*.zip "*Non-KernelSU variant*
+    tg_post_build starfield*.zip "*KernelSU variant*
 *Build took* : $MESSAGE" > /dev/null
   fi
 }
