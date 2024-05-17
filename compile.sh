@@ -124,9 +124,9 @@ package_kernel() {
   else
     # Fail
     if [ ! $INC_KSU = true ]; then 
-      tg_post_build log.txt "*Build for KernelSU variant failed!*" > /dev/null
-    else
       tg_post_build log.txt "*Build for Non-KernelSU variant failed!*" > /dev/null
+    else
+      tg_post_build log.txt "*Build for KernelSU variant failed!*" > /dev/null
     fi
     exit 1
   fi
